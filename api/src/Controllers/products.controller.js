@@ -75,10 +75,70 @@ return res.status(404).send("error getProducts")
 }
 
 
+const nameProduct = async (req, res)=>{
+try {
+    //obetenemos la informacion por query
+const {name} = req.query
+//buscamos la coincidencia en la db
+
+const infoDb = await Productos.findOne({where : {name},  include: Categories})
+//hacemos la peticion en la db 
+//console.log(infoDb)
+const dataApi = await axios.get(`https://api.escuelajs.co/api/v1/products/?title=${name}`)
+//console.log(dataApi)
+
+if(infoDb){
+const dataDb = [
+    {
+        id : infoDb.id,
+name: infoDb.name,
+description : infoDb.description,
+image : infoDb.image,
+price : infoDb.price,
+enable : infoDb.enable,
+categories : infoDb.categories[0].name
+    }
+]
+const infoApi = dataApi.data.map((e)=> {
+    return {
+        id : e.id,
+        name: e.title,
+        description : e.description,
+        image : e.images[0],
+        price : e.price,
+        categories : e.category.name
+        }
+})
+const allData = dataDb.concat(infoApi)
+return res.status(202).json(allData)
+
+}else {
+    const infoApi = dataApi.data.map((e)=> {
+        return {
+            id : e.id,
+            name: e.title,
+            description : e.description,
+            image : e.images[0],
+            price : e.price,
+            categories : e.category.name
+            }
+    })
+
+    return res.status(202).json(infoApi)
+}
+
+} catch (error) {
+console.log(error)
+return res.status(404).send({msg : "Error from nameProduct"})
+}
+}
+
+
 
 
 //exportamos el modulo con las funciones
 module.exports = {
     getProducts,
-    createProducts
+    createProducts,
+    nameProduct
 }
