@@ -1,6 +1,9 @@
 //importamos por medio del require los modelos de las base de datos para utilizarlos en la funciones
 const {Productos , Categories}= require("../db")
 const axios = require("axios")
+const { response } = require("../app")
+
+
 //Crear Productos
 const createProducts = async (req, res)=> {
     try {
@@ -80,24 +83,22 @@ try {
     //obetenemos la informacion por query
 const {name} = req.query
 //buscamos la coincidencia en la db
-
 const infoDb = await Productos.findOne({where : {name},  include: Categories})
 //hacemos la peticion en la db 
 //console.log(infoDb)
 const dataApi = await axios.get(`https://api.escuelajs.co/api/v1/products/?title=${name}`)
 //console.log(dataApi)
-
 if(infoDb){
 const dataDb = [
     {
-        id : infoDb.id,
+ id : infoDb.id,
 name: infoDb.name,
 description : infoDb.description,
 image : infoDb.image,
 price : infoDb.price,
 enable : infoDb.enable,
 categories : infoDb.categories[0].name
-    }
+}
 ]
 const infoApi = dataApi.data.map((e)=> {
     return {
@@ -135,10 +136,40 @@ return res.status(404).send({msg : "Error from nameProduct"})
 
 
 
+const updateProduct = async(req, res)=> {
+    try {
+        //obtenemos id por params
+const {id} = req.params
+//obtenemos la informacion que deseamos cambiar 
+const {name , image, price, description}= req.body
+//validamos que cualquiera de la inforamcion ente
+if(name || image || price || description){
+    await Productos.update(
+        //actualizamos 
+        {name, image,price, description},
+        //donde el id del producto coincida
+        {where : {id:id}}
+    )
+
+    //respondemos
+    return res.status(202).json({msg: "Producto actualizado"})
+}else{
+    return res
+        .status(309)
+        .json({ msg: "no se encuentran datos para actualizar" });
+}
+
+    }catch(error){
+console.log(error)
+return res.status(404).send({msg: "Erro updateProduct"})
+    }
+}
+
 
 //exportamos el modulo con las funciones
 module.exports = {
     getProducts,
     createProducts,
-    nameProduct
+    nameProduct,
+    updateProduct
 }
