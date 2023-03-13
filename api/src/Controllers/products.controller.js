@@ -165,11 +165,56 @@ return res.status(404).send({msg: "Erro updateProduct"})
     }
 }
 
+const detailsProduct = async (req, res)=>{
+try {
+const {id}= req.params
+//si el tipo de id es un string, busca en la base de datos
+if(id.includes("-")){
+    //buscamos en id
+    console.log(id)
+const infoDb = await Productos.findOne({where : {id} , include : Categories})
+const dataDb = [
+    {
+id : infoDb.id,
+name: infoDb.name,
+description : infoDb.description,
+image : infoDb.image,
+price : infoDb.price,
+enable : infoDb.enable,
+ categories : infoDb.categories[0].name
+
+}
+]
+console.log(dataDb)
+return res.status(202).json(dataDb)
+}else {
+const dataApi = await axios.get(`https://api.escuelajs.co/api/v1/products/${id}`)
+const infoApi = [
+{
+id : dataApi.data.id,
+name: dataApi.data.title,
+description : dataApi.data.description,
+image : dataApi.data.images[0],
+price : dataApi.data.price,
+categories : dataApi.data.category.name
+}
+]
+ 
+return res.status(202).json(infoApi)
+}
+ 
+} catch (error) {
+    console.log(error)
+    return res.status(404).send({msg: "Error DetailsProduct"})
+}
+}
+
 
 //exportamos el modulo con las funciones
 module.exports = {
     getProducts,
     createProducts,
     nameProduct,
-    updateProduct
+    updateProduct,
+    detailsProduct
 }
