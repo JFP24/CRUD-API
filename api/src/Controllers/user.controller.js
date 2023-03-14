@@ -20,6 +20,7 @@ email ,
 image,
 role
 })
+//respondemos el usuario creado
 return res.status(202).json({msg: "Usuario creado Correctamente" , createUser})
 }else {
 return res.status(404).send({msg: "Ya se encuentra registrado el email"})
@@ -33,14 +34,60 @@ return res.status(404).send({msg:"Error CreateUsers"})
 
 
 const getUsers = async (req, res) => {
-
 try {
+//obtenemos todos los usuarios 
 const allUsers = await Users.findAll()
+//respondemos json de los usuarios para usarlos en el front
+return res.status(202).json(allUsers)
 console.log(allUsers)
-
-    
 } catch (error) {
-    console.log(error)
-    return res.status(404).send({msg: "error getUsers"})
+ console.log(error)
+return res.status(404).send({msg: "error getUsers"})
 }
+}
+
+const updateUsers = async (req, res)=> {
+try {
+//traemos id por params
+const {id} = req.params
+//obtenemos por body los datos para actualizar
+const { username, image } = req.body;
+//validamos
+if (username || image) {
+//actualiza
+ await Users.update(
+{ username, image },
+{ where: { id: id } }
+);
+return     res.status(202).json({ msg: "User actualizado" });
+} else {
+ return  res.status(404).send({ msg: "no se encuentran datos para actualizar" });
+} 
+} catch (error) {
+console.log(error)
+return res.status(404).send({msg: "Error updateUsers"})
+}
+}
+
+const deleteUser =async (res, req)=> {
+try {
+//obtenemos id por params
+const {id} = req.params
+//eliminamos el usuario con la propiedad destroy
+await Users.destroy({where :{id}})
+return res.status(200).send({msg: "Usuario eliminado exitosamente"})
+} catch (error) {
+console.log(error)
+return res.status(404).send({msg:"Error deleteUser"})
+}
+}
+
+
+module.exports = {
+
+    createUsers,
+    getUsers,
+    updateUsers,
+    deleteUser
+
 }
