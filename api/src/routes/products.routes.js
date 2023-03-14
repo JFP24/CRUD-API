@@ -4,8 +4,8 @@ const express = require("express")
 const router = Router()
 //usamos el json para leer lo que no entra por parametros
 router.use(express.json())
-
 const { getProducts, createProducts, nameProduct, updateProduct, detailsProduct} = require("../Controllers/products.controller")
+
 
 router.get("/products", getProducts)
 router.post("/createProducts", createProducts)

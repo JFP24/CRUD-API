@@ -1,7 +1,6 @@
 //importamos por medio del require los modelos de las base de datos para utilizarlos en la funciones
 const {Productos , Categories}= require("../db")
 const axios = require("axios")
-const { response } = require("../app")
 
 
 //Crear Productos
