@@ -13,4 +13,4 @@ router.get("/allUsers", getUsers)
 router.post("/createUsers", createUsers)
 router.get("/updateUsers", updateUsers)
 router.delete("/deleteUser", deleteUser)
-    module.exports = router
+module.exports = router
