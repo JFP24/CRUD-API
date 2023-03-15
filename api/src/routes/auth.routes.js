@@ -5,9 +5,9 @@ const router = Router()
 //usamos el json para leer lo que no entra por parametros
 router.use(express.json())
 
-const { getCategories} = require("../Controllers/categories.controller")
+const { login} = require("../Controllers/auth.controller")
 
-router.get("/categories", getCategories)
+router.post("/login", login)
 
 
 module.exports = router
