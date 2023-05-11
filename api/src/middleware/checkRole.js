@@ -8,7 +8,7 @@ try {
 const token = req.headers.authorization.split(" ").pop()
 //verificamos que sea un token valido y obtenemos informacion necesaria de este
 const tokenData = jwt.verify(token, "autho");
-//verificamos con el id del toen que se genera el user 
+//verificamos con el id del token que se genera el user 
 const userData = await Users.findByPk(tokenData.id)
 //si el rol del user es admin pasamod la siguiente funcion
 if(userData.role==="admin"){

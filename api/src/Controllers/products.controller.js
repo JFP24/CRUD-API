@@ -79,7 +79,7 @@ return res.status(404).send("error getProducts")
 
 const nameProduct = async (req, res)=>{
 try {
-    //obetenemos la informacion por query
+//obetenemos la informacion por query
 const {name} = req.query
 //buscamos la coincidencia en la db
 const infoDb = await Productos.findOne({where : {name},  include: Categories})
